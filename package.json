@@ -1,0 +1,26 @@
+{
+  "name": "nova-store--backend",
+  "version": "1.0.0",
+  "description": "backend repository for nova store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohit-codes/nova-store--backend.git"
+  },
+  "author": "mohit-codes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohit-codes/nova-store--backend/issues"
+  },
+  "homepage": "https://github.com/mohit-codes/nova-store--backend#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "eslint": "^8.6.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.4"
+  }
+}
