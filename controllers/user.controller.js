@@ -8,38 +8,46 @@ const loginUserAndSendCredentials = async (req, res) => {
     const user = await User.findOne({ email: email }).catch((err) =>
       console.log(err)
     );
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (isPasswordCorrect) {
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "24h",
-      });
+    if (user) {
+      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if (isPasswordCorrect) {
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+          expiresIn: "24h",
+        });
+        return res.json({
+          success: true,
+          message: "Login Successful",
+          user: _.pick(user, ["_id", "name", "email"]),
+          token: token,
+        });
+      }
       return res.json({
-        status: true,
-        message: "Login Successful",
-        user: _.pick(user, ["_id", "name", "email"]),
-        token: token,
+        success: false,
+        message: "Wrong Password!",
+        user: null,
+        token: null,
       });
     }
     return res.json({
-      status: false,
-      message: "Wrong Password!",
+      success: false,
+      message: "User not found!",
       user: null,
       token: null,
     });
   } catch (error) {
-    return res.json({ status: false, message: error.message });
+    return res.json({ success: false, message: error.message });
   }
 };
 
 const signupUserAndSendCredentials = async (req, res) => {
   try {
-    const { user } = req.body;
+    const user = req.body;
     const isAlreadyExist = await User.findOne({ email: user.email }).catch(
       (err) => console.log(err)
     );
     if (isAlreadyExist) {
       return res.json({
-        status: false,
+        success: false,
         message: "Email already exist, try login instead",
       });
     }
@@ -51,12 +59,13 @@ const signupUserAndSendCredentials = async (req, res) => {
       expiresIn: "24h",
     });
     return res.json({
-      status: true,
+      success: true,
       user: _.pick(newUser, ["_id", "name", "email"]),
       token: token,
     });
   } catch (error) {
-    return res.json({ status: false, message: error.message });
+    console.trace(error);
+    return res.json({ success: false, message: error.message });
   }
 };
 
