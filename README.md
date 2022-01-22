@@ -12,7 +12,9 @@ Backend using ExpressJS connected to MongoDB through Mongoose.
 ### Products
 
 - GET /products - fetches all products.
-- GET /products/:productId - fetches single product.
+- GET /products/single-product/:productId - fetches single product.
+- GET /products/categories - fetches product categories
+- GET /products/featured - fetches featured products
 
 ### Wishlists
 
