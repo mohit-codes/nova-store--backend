@@ -2,6 +2,9 @@ const _ = require("lodash");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Cart = require("../models/cart.model");
+const Wishlist = require("../models/wishlist.model");
+
 const loginUserAndSendCredentials = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -11,9 +14,7 @@ const loginUserAndSendCredentials = async (req, res) => {
     if (user) {
       const isPasswordCorrect = await bcrypt.compare(password, user.password);
       if (isPasswordCorrect) {
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-          expiresIn: "24h",
-        });
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
         return res.json({
           success: true,
           message: "Login Successful",
@@ -55,9 +56,7 @@ const signupUserAndSendCredentials = async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
     let newUser = new User(user);
     newUser = await newUser.save();
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
     return res.json({
       success: true,
       user: _.pick(newUser, ["_id", "name", "email"]),
@@ -69,4 +68,25 @@ const signupUserAndSendCredentials = async (req, res) => {
   }
 };
 
-module.exports = { loginUserAndSendCredentials, signupUserAndSendCredentials };
+const fetchUserDataById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    let cart = null;
+    let wishlist = null;
+    if (user.cart !== undefined) {
+      cart = await Cart.findById(user.cart);
+    }
+    if (user.wishlist !== undefined) {
+      wishlist = await Wishlist.findById(user.wishlist);
+    }
+    return res.json({ cart: cart.items, wishlist: wishlist.items });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  loginUserAndSendCredentials,
+  signupUserAndSendCredentials,
+  fetchUserDataById,
+};
