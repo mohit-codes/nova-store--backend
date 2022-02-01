@@ -5,21 +5,19 @@ const fetchAllCartItems = async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
-    const cart = await Cart.findById(user.cart);
-    if (!cart) {
+
+    if (user.cart !== undefined) {
+      const cartItems = await Cart.findById(user.cart).populate(
+        "items.product"
+      );
       return res.json({
-        success: false,
-        massage: "Cart hasn't been created yet",
+        success: true,
+        items: cartItems,
       });
     }
-    const cartItems = await cart.execPopulate({
-      path: "items",
-      populate: { path: "Product" },
-    });
-    console.log(cartItems);
     return res.json({
-      success: true,
-      items: cartItems,
+      success: false,
+      massage: "Cart hasn't been created yet",
     });
   } catch (error) {
     res.json({
@@ -54,13 +52,9 @@ const addToCart = async (req, res) => {
       await user.update({ cart: newCart._id });
     }
     const newUser = await User.findById(userId);
-    const cartItems = await (
-      await Cart.findById(newUser.cart)
-    ).execPopulate({
-      path: "items",
-      populate: { path: "Product" },
-    });
-    console.log(cartItems);
+    const cartItems = await Cart.findById(newUser.cart).populate(
+      "items.product"
+    );
     return res.json({
       success: true,
       items: cartItems,
@@ -90,12 +84,7 @@ const removeItem = async (req, res) => {
         message: "Invalid Request",
       });
     }
-    const cartItems = await (
-      await Cart.findById(user.cart)
-    ).execPopulate({
-      path: "items",
-      populate: { path: "Product" },
-    });
+    const cartItems = await Cart.findById(user.cart).populate("items.product");
     console.log(cartItems);
     return res.json({
       success: true,
