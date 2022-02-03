@@ -7,12 +7,10 @@ const fetchAllCartItems = async (req, res) => {
     const user = await User.findById(userId);
 
     if (user.cart !== undefined) {
-      const cartItems = await Cart.findById(user.cart).populate(
-        "items.product"
-      );
+      const cart = await Cart.findById(user.cart).populate("items.product");
       return res.json({
         success: true,
-        items: cartItems,
+        items: cart.items,
       });
     }
     return res.json({
@@ -49,7 +47,7 @@ const addToCart = async (req, res) => {
         user: userId,
       });
       newCart = await newCart.save();
-      await user.update({ cart: newCart._id });
+      await user.updateOne({ cart: newCart._id });
     }
     const newUser = await User.findById(userId);
     const cartItems = await Cart.findById(newUser.cart).populate(
@@ -77,7 +75,7 @@ const removeItem = async (req, res) => {
       ({ product }) => product.toString() == productId
     );
     if (productExist) {
-      await cart.update({ $pull: { items: { product: productId } } });
+      await cart.updateOne({ $pull: { items: { product: productId } } });
     } else {
       return res.json({
         success: true,
@@ -85,7 +83,6 @@ const removeItem = async (req, res) => {
       });
     }
     const cartItems = await Cart.findById(user.cart).populate("items.product");
-    console.log(cartItems);
     return res.json({
       success: true,
       items: cartItems,
@@ -101,8 +98,8 @@ const removeItem = async (req, res) => {
 
 const changeQuantity = async (req, res) => {
   try {
-    const { userId, productId } = req.params;
-    const { quantity } = req.body;
+    const { userId } = req.params;
+    const { productId, quantity } = req.body;
     const user = await User.findById(userId);
     let cart = await Cart.findById(user.cart);
     const productExist = cart.items.some(
@@ -111,7 +108,7 @@ const changeQuantity = async (req, res) => {
     if (productExist) {
       let items = cart.items.map((item) =>
         item.product.toString() == productId
-          ? { ...item, quantity: quantity }
+          ? { ...item._doc, quantity: quantity }
           : item
       );
       cart.items = items;
