@@ -71,15 +71,19 @@ const signupUserAndSendCredentials = async (req, res) => {
 const fetchUserDataById = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    let cart = null;
-    let wishlist = null;
+    let cart = [];
+    let wishlist = [];
     if (user.cart !== undefined) {
       cart = await Cart.findById(user.cart);
     }
     if (user.wishlist !== undefined) {
       wishlist = await Wishlist.findById(user.wishlist);
     }
-    return res.json({ cart: cart.items, wishlist: wishlist.items });
+    return res.json({
+      success: true,
+      cart: cart.items,
+      wishlist: wishlist.items,
+    });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
