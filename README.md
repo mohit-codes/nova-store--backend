@@ -18,7 +18,7 @@ Backend using ExpressJS connected to MongoDB through Mongoose.
 
 ### Wishlists
 
-- GET /carts/fetch-wishlist/:userId - fetches user's wishlist items.
+- GET /wishlists/fetch-wishlist/:userId - fetches user's wishlist items.
 - POST /wishlists/add-item/:userId/:productId - adds product to user's wishlist.
 - DELETE /wishlists/remove-item/:userId/:productId" - removes the product from the user's wishlist.  
 
