@@ -12,11 +12,13 @@ Backend using ExpressJS connected to MongoDB through Mongoose.
 ### Products
 
 - GET /products - fetches all products.
-- GET /products/:productId - fetches single product.
+- GET /products/single-product/:productId - fetches single product.
+- GET /products/categories - fetches product categories
+- GET /products/featured - fetches featured products
 
 ### Wishlists
 
-- GET /carts/fetch-wishlist/:userId - fetches user's wishlist items.
+- GET /wishlists/fetch-wishlist/:userId - fetches user's wishlist items.
 - POST /wishlists/add-item/:userId/:productId - adds product to user's wishlist.
 - DELETE /wishlists/remove-item/:userId/:productId" - removes the product from the user's wishlist.  
 
