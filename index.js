@@ -17,7 +17,7 @@ app.use(cors());
 
 initializeDBConnection();
 
-app.get("/", (res) => {
+app.get("/", (req, res) => {
   return res.json({ status: "Welcome to Nova Store server" });
 });
 
