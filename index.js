@@ -18,7 +18,7 @@ app.use(cors());
 initializeDBConnection();
 
 app.get("/", (res) => {
-  return res.send({ status: "Welcome to Nova Store server" });
+  return res.json({ status: "Welcome to Nova Store server" });
 });
 
 app.use("/users", userRouter);
