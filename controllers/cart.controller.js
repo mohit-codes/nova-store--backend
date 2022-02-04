@@ -131,5 +131,25 @@ const changeQuantity = async (req, res) => {
     });
   }
 };
+const makeOrder = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    await Cart.updateOne({ user: userId }, { items: [] });
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return res.json({
+      success: false,
+      message: "something went wrong",
+      errorMessage: err.message,
+    });
+  }
+};
 
-module.exports = { fetchAllCartItems, addToCart, removeItem, changeQuantity };
+module.exports = {
+  fetchAllCartItems,
+  addToCart,
+  removeItem,
+  changeQuantity,
+  makeOrder,
+};
